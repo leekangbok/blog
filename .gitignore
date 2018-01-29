@@ -251,5 +251,6 @@ pip-selfcheck.json
 .history
 
 db.sqlite3
+staticfiles/
 
 # End of https://www.gitignore.io/api/node,python,pycharm,virtualenv,visualstudiocode
