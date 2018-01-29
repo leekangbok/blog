@@ -250,5 +250,6 @@ pip-selfcheck.json
 !.vscode/extensions.json
 .history
 
+db.sqlite3
 
 # End of https://www.gitignore.io/api/node,python,pycharm,virtualenv,visualstudiocode
