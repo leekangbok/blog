@@ -1,0 +1,5 @@
+const SIDENAV_DRAWER = 'SIDENAV_DRAWER'
+
+export default {
+  SIDENAV_DRAWER
+}
