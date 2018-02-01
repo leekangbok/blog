@@ -1,7 +1,8 @@
 <template>
   <iu-grid-container :items="items.items">
     <template slot-scope="props">
-      <iu-article-container :item="props.item" summary></iu-article-container>
+      <iu-article-container :item="props.item"
+        summary></iu-article-container>
     </template>
   </iu-grid-container>
 </template>
@@ -18,17 +19,17 @@ export default {
     }
   },
   created() {
-    this.fetchData()
+    this.fetchArticleData()
   },
   methods: {
     ...mapActions([type.ARTICLE_ITEMS]),
-    fetchData() {
+    fetchArticleData() {
       if (!this.search) {
-        this[type.ARTICLE_ITEMS]().then(resolve => {
-          console.log(resolve)
-        }).catch(error => {
-          console.log(error)
-        })
+        this[type.ARTICLE_ITEMS]()
+          .then(resolve => {})
+          .catch(error => {
+            console.log(error)
+          })
       }
     }
   },
@@ -38,11 +39,10 @@ export default {
     })
   },
   watch: {
-    '$route': 'fetchData'
+    $route: 'fetchArticleData'
   },
   data() {
-    return {
-    }
+    return {}
   }
 }
 </script>

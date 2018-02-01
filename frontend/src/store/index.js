@@ -8,6 +8,7 @@ Vue.use(Vuex)
 const state = {
   [type.SIDENAV_DRAWER]: null,
   [type.ARTICLE_ITEMS]: [],
+  [type.COMMENT_ITEMS]: [],
   [type.LOADING]: false
 }
 
@@ -20,20 +21,23 @@ const mutations = {
   },
   [type.ARTICLE_ITEMS](state, value) {
     state[type.ARTICLE_ITEMS] = value
+  },
+  [type.COMMENT_ITEMS](state, value) {
+    state[type.COMMENT_ITEMS] = value
   }
 }
 
 const getters = {
   [type.ARTICLE_ITEMS](state) {
     return state[type.ARTICLE_ITEMS]
+  },
+  [type.COMMENT_ITEMS](state) {
+    return state[type.COMMENT_ITEMS]
   }
 }
 
 const actions = {
-  [type.ARTICLE_ITEMS](
-    { commit },
-    { query = '', tag = '', offset = 0, limit = 99999 } = {}
-  ) {
+  [type.ARTICLE_ITEMS]({ commit }, { query = '', tag = '', offset = 0, limit = 99999 } = {}) {
     commit(type.LOADING, true)
     return new Promise((resolve, reject) => {
       axios
@@ -50,6 +54,26 @@ const actions = {
             item.flex = index === 0 ? 8 : 4
           }
           commit(type.ARTICLE_ITEMS, response.data)
+          commit(type.LOADING, false)
+          resolve(response)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  [type.COMMENT_ITEMS]({ commit }, { fk = '', pk = '' } = {}) {
+    commit(type.LOADING, true)
+    return new Promise((resolve, reject) => {
+      let urls = `/api/articles/comment/${fk}/`
+      if (pk) {
+        urls = `${urls}${pk}/`
+      }
+      axios
+        .get(urls)
+        .then(response => {
+          // console.log(response.data)
+          commit(type.COMMENT_ITEMS, response.data)
           commit(type.LOADING, false)
           resolve(response)
         })

@@ -4,8 +4,16 @@ from .base import ArticleBase
 
 
 class Article(ArticleBase):
+    TAGS = (
+        ('PYTHON', '파이썬'),
+        ('PYTHON-FRAMEWORK', '파이썬 프레임워크'),
+        ('JSCRIPT', '자바스크립트'),
+        ('JSCRIPT-FRAMEWORK', '자바스크립트 프레임워크'),
+        ('CPLUS+', 'C++'),
+        ('CPLUS+-FRAMEWORK', 'C++ 프레임워크')
+    )
     title = models.CharField(max_length=512)
-    tag = models.CharField(max_length=512, null=True, blank=True, default='')
+    tag = models.CharField(max_length=64, choices=TAGS)
     num_stars = models.IntegerField(null=True, blank=True, default=0)
 
     def __str__(self):

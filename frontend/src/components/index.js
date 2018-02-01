@@ -1,10 +1,14 @@
 import axios from 'axios'
 import GridContainer from './gridcontainer'
 import ArticleContainer from './articlecontainer'
+import ReplyBtn from './replybtn'
+import FavoriteBtn from './favoritebtn'
 
 const components = {
   GridContainer,
-  ArticleContainer
+  ArticleContainer,
+  ReplyBtn,
+  FavoriteBtn
 }
 
 function componentsInstall(Vue) {
