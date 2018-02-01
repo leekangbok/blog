@@ -11,25 +11,19 @@ import { mapActions, mapGetters } from 'vuex'
 import type from '@/store/type'
 
 export default {
-  props: {
-    search: {
-      type: Boolean,
-      default: false
-    }
-  },
   created() {
     this.fetchData()
   },
   methods: {
     ...mapActions([type.ARTICLE_ITEMS]),
     fetchData() {
-      if (!this.search) {
-        this[type.ARTICLE_ITEMS]().then(resolve => {
+      this[type.ARTICLE_ITEMS]({ tag: 'pylang' })
+        .then(resolve => {
           console.log(resolve)
-        }).catch(error => {
+        })
+        .catch(error => {
           console.log(error)
         })
-      }
     }
   },
   computed: {
@@ -38,11 +32,7 @@ export default {
     })
   },
   watch: {
-    '$route': 'fetchData'
-  },
-  data() {
-    return {
-    }
+    $route: 'fetchData'
   }
 }
 </script>

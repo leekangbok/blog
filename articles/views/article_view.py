@@ -1,5 +1,7 @@
+import json
+
 from django.core import serializers
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 
@@ -12,14 +14,22 @@ class ArticleView(ViewBase):
     def get(self, request, pk=-1):
         if pk == -1:
             try:
-                return HttpResponse(serializers.serialize('json', self.get_query_set(request)),
-                                    content_type='application/json')
+                qs = self.get_query_set(request)
+                return JsonResponse({
+                    'total'     : Article.objects.count(),
+                    'curr_total': qs.count(),
+                    'items'     : json.loads(serializers.serialize('json', self.set_limit_offset(request, qs)))
+                }, safe=False)
             except Http404:
-                return JsonResponse([], safe=False)
+                return JsonResponse({
+                    'total'     : Article.objects.count(),
+                    'curr_total': 0,
+                    'data'      : []
+                }, safe=False)
 
-        return HttpResponse(
-            serializers.serialize('json', [get_object_or_404(Article, pk=pk)]).strip('[]'),
-            content_type='application/json')
+        return JsonResponse({
+            'items': json.loads(serializers.serialize('json', [get_object_or_404(Article, pk=pk)]))
+        }, safe=False)
 
     def post(self, request, pk=-1):
         form = ArticleForm(request.POST or None,
@@ -27,12 +37,21 @@ class ArticleView(ViewBase):
         if form.is_valid():
             article = form.save(commit=False)
             article.save()
-        return HttpResponse()
+        return JsonResponse({'result': 'success'})
 
     def delete(self, _, pk=-1):
         get_object_or_404(Article, pk=pk).delete()
-        return HttpResponse()
+        return JsonResponse({'result': 'success'})
 
     def get_query_set(self, request):
-        query_set = self.set_limit_offset(request, Article.objects.all())
-        return query_set
+        query = request.GET.get('query', '')
+        tag = request.GET.get('tag', '')
+        if query or tag:
+            qs = Article.objects
+            if query:
+                qs = qs.filter(body__icontains=query)
+            if tag:
+                qs = qs.filter(tag__iexact=tag)
+        else:
+            qs = Article.objects.all()
+        return qs

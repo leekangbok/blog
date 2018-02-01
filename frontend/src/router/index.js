@@ -25,6 +25,9 @@ const routes = [...sideNavItems.reduce((accumulator, currentValue) => {
 }, {
   path: '/',
   name: 'home',
+  props: ({ query = {} }) => {
+    return { search: query.search || false }
+  },
   component: load('components/Home')
 }, {
   path: '*',

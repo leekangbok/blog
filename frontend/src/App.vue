@@ -13,7 +13,8 @@
       dark
       color="purple"
       sliderColor="white"
-      @evSearch="doSearch"
+      activeColor="purple darken-2"
+      @evSearch="searchArticle"
       title="iunOs"
       :items="topMenus">
       <v-btn icon
@@ -49,11 +50,15 @@
       <v-spacer></v-spacer>
       <span>iunOs&copy; 2018</span>
     </v-footer>
+    <Loading :show="loading"
+      :label="loadingLabel">
+    </Loading>
   </v-app>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import Loading from 'vue-full-loading'
 import type from '@/store/type'
 import SideNav from '@/components/SideNav'
 import TopNav from '@/components/TopNav'
@@ -65,16 +70,17 @@ export default {
     return {
       sideMenus: sideNavItems,
       topMenus: [
-        { title: '홈', name: 'home' },
-        { title: '여행', name: 'travel' },
+        { title: 'Home', name: 'home' },
+        { title: 'Trip', name: 'trip' },
         { title: 'Team', name: 'team' },
-        { title: '게시판', name: 'contact' }
+        { title: 'bbs', name: 'bbs' }
       ],
       foot: `
       Sonrie, es un mal dia no una mala vida,
       Smile, it's been just a bad day,
       not a bad life
-      `
+      `,
+      loadingLabel: 'waiting...'
     }
   },
   computed: {
@@ -87,18 +93,23 @@ export default {
       }
     },
     ...mapState({
-      sideNavDrawer: type.SIDENAV_DRAWER
+      sideNavDrawer: type.SIDENAV_DRAWER,
+      loading: type.LOADING
     })
   },
   methods: {
-    doSearch(query) {},
+    searchArticle(query) {
+      this[type.ARTICLE_ITEMS]({query}).then(resolve => { this.$router.push({name: 'home', query: {search: true}}) }).catch(error => { console.log(error) })
+    },
     ...mapMutations({
       setSideNavDrawer: type.SIDENAV_DRAWER
-    })
+    }),
+    ...mapActions([type.ARTICLE_ITEMS])
   },
   components: {
     SideNav,
-    TopNav
+    TopNav,
+    Loading
   }
 }
 </script>
@@ -109,6 +120,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50 !important;
   font-size: 12px !important;
+  text-transform: none !important;
   /* font-weight: bold; */
 }
 
