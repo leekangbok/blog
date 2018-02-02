@@ -5,6 +5,7 @@ from .base import ArticleBase
 
 class Article(ArticleBase):
     TAGS = (
+        ('BITCOIN', '비트코인'),
         ('PYTHON', '파이썬'),
         ('PYTHON-FRAMEWORK', '파이썬 프레임워크'),
         ('JSCRIPT', '자바스크립트'),

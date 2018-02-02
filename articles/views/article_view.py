@@ -37,7 +37,9 @@ class ArticleView(ViewBase):
         if form.is_valid():
             article = form.save(commit=False)
             article.save()
-        return JsonResponse({'result': 'success'})
+        return JsonResponse({
+            'items': json.loads(serializers.serialize('json', [article]))
+        }, safe=False)
 
     def delete(self, _, pk=-1):
         get_object_or_404(Article, pk=pk).delete()

@@ -17,7 +17,7 @@ export default {
   methods: {
     ...mapActions([type.ARTICLE_ITEMS]),
     fetchData() {
-      this[type.ARTICLE_ITEMS]({ tag: 'PYTHON' })
+      this[type.ARTICLE_ITEMS]({ tag: 'PYTHON-FRAMEWORK' })
         .then(resolve => {
           console.log(resolve)
         })

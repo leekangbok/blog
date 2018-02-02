@@ -1,5 +1,5 @@
 <template>
-  <iu-article-container :item="$attrs.item"></iu-article-container>
+  <iu-article-container :article="$attrs.item"></iu-article-container>
 </template>
 
 <script>

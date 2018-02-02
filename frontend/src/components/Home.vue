@@ -1,7 +1,7 @@
 <template>
   <iu-grid-container :items="items.items">
     <template slot-scope="props">
-      <iu-article-container :item="props.item"
+      <iu-article-container :article="props.item"
         summary></iu-article-container>
     </template>
   </iu-grid-container>

@@ -1,14 +1,23 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import qs from 'qs'
 import type from './type'
 
 Vue.use(Vuex)
 
 const state = {
   [type.SIDENAV_DRAWER]: null,
-  [type.ARTICLE_ITEMS]: [],
-  [type.COMMENT_ITEMS]: [],
+  [type.ARTICLE_ITEMS]: {
+    total: 0,
+    curr_total: 0,
+    items: []
+  },
+  [type.COMMENT_ITEMS]: {
+    total: 0,
+    curr_total: 0,
+    items: []
+  },
   [type.LOADING]: false
 }
 
@@ -37,7 +46,36 @@ const getters = {
 }
 
 const actions = {
-  [type.ARTICLE_ITEMS]({ commit }, { query = '', tag = '', offset = 0, limit = 99999 } = {}) {
+  [type.UPDATE_ARTICLE_ITEM]({ commit }, { item }) {
+    commit(type.LOADING, true)
+    let { author, passwd, body, title, tag, num_stars } = item.fields
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          `/api/articles/article/${item.pk}/change/`,
+          qs.stringify({
+            author,
+            passwd,
+            body,
+            title,
+            tag,
+            num_stars: num_stars + 1
+          })
+        )
+        .then(response => {
+          commit(type.LOADING, false)
+          resolve(response.data.items[0])
+        })
+        .catch(error => {
+          console.log(error)
+          reject(error)
+        })
+    })
+  },
+  [type.ARTICLE_ITEMS](
+    { commit },
+    { query = '', tag = '', offset = 0, limit = 99999 } = {}
+  ) {
     commit(type.LOADING, true)
     return new Promise((resolve, reject) => {
       axios
@@ -72,7 +110,6 @@ const actions = {
       axios
         .get(urls)
         .then(response => {
-          // console.log(response.data)
           commit(type.COMMENT_ITEMS, response.data)
           commit(type.LOADING, false)
           resolve(response)
