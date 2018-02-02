@@ -82,7 +82,7 @@ export default {
                 }
               })
             ]),
-            this.$createElement('v-card-action', [
+            this.$createElement('v-card-actions', [
               this.$createElement('v-btn', { props: { flat: true } }, '취소')
             ])
           ])
