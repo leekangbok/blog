@@ -3,20 +3,16 @@
 </template>
 
 <script>
-import store from '@/store'
-import type from '@/store/type'
 import ArticleSummaryView from './ArticleSummaryView'
 
 export default {
-  props: {},
   created() {
-    this.items = this.$route.params.items
-    // this.fetchArticleData()
+    this.fetchArticleData()
   },
   methods: {
     fetchArticleData() {
       this.fetchArticles({
-        tag: 'PYTHON-FRAMEWORK'
+        tag: 'JSCRIPT'
       }).then(response => {
         this.items = response.items
       }).catch(error => {
@@ -25,23 +21,15 @@ export default {
     }
   },
   watch: {
-    // $route: 'fetchArticleData'
+    $route: 'fetchArticleData'
   },
   data() {
     return {
-      items: null
+      items: []
     }
   },
   components: {
     ArticleSummaryView
-  },
-  beforeRouteEnter(to, from, next) {
-    store.dispatch(type.ARTICLE_ITEMS, {
-      tag: 'PYTHON-FRAMEWORK'
-    }).then(response => {
-      to.params['items'] = response.items
-      next(vm => {})
-    })
   }
 }
 </script>

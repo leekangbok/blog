@@ -101,7 +101,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios.post(`/api/articles/comment/${fk}/add/`, qs.stringify({author, body, passwd})).then(response => {
         dispatch(type.COMMENT_ITEMS, {fk}).then(response => {
-          resolve(response)
+          resolve(response.data)
         }).catch(error => {
           console.log(error)
         })
@@ -191,7 +191,7 @@ const actions = {
       axios.get(urls).then(response => {
         commit(type.COMMENT_ITEMS, response.data)
         commit(type.LOADING, false)
-        resolve(response)
+        resolve(response.data)
       }).catch(error => {
         reject(error)
       })

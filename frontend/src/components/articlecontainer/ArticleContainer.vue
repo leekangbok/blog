@@ -19,10 +19,6 @@ export default {
     }
   },
   render(createElement) {
-    if (!this.item) {
-      return createElement('v-card')
-    }
-
     let data = {
       props: {}
     }

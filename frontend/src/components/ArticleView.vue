@@ -11,6 +11,7 @@ import {
   mapActions
 } from 'vuex'
 import type from '@/store/type'
+import store from '@/store'
 
 export default {
   props: ['pk'],
@@ -21,7 +22,9 @@ export default {
     }
   },
   created() {
-    this.fetchArticleData()
+    this.item = this.$attrs.item
+    this.comments = this.$attrs.comments
+    // this.fetchArticleData()
   },
   methods: {
     ...mapActions([
@@ -36,7 +39,7 @@ export default {
         this.fetchComments({
           fk: this.pk
         }).then(response => {
-          this.comments = response.data.items
+          this.comments = response.items
         }).catch(error => {
           console.log(error)
         })
@@ -67,7 +70,20 @@ export default {
     }
   },
   watch: {
-    $route: 'fetchArticleData'
+    // $route: 'fetchArticleData'
+  },
+  beforeRouteEnter(to, from, next) {
+    store.dispatch(type.ARTICLE_ITEMS, {
+      pk: to.params.pk
+    }).then(response => {
+      to.params['item'] = response.items[0]
+      store.dispatch(type.COMMENT_ITEMS, {
+        fk: to.params.pk
+      }).then(response => {
+        to.params['comments'] = response.items
+        next(vm => {})
+      })
+    })
   }
 }
 </script>
