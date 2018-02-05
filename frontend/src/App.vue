@@ -1,86 +1,77 @@
 <template>
-  <v-app id="app">
-    <SideNav :items="sideMenus"
-      fixed
-      app
-      logoImages="static/images/iunos.png"
-      logoImagesHeight="150"
-      v-model="drawer">
-    </SideNav>
-    <TopNav app
-      fixed
-      extended
-      dark
-      color="purple"
-      sliderColor="white"
-      activeColor="purple darken-2"
-      @evSearch="searchArticle"
-      title="iunOs"
-      :items="topMenus">
-      <v-btn icon
-        small>
-        <v-icon>favorite</v-icon>
-      </v-btn>
-      <v-btn icon
-        small>
-        <v-icon>comment</v-icon>
-      </v-btn>
-      <v-btn icon
-        small>
-        <v-icon>account_circle</v-icon>
-      </v-btn>
-      <v-btn icon
-        small>
-        <v-icon>more_vert</v-icon>
-      </v-btn>
-    </TopNav>
-    <v-content>
-      <v-container fluid
-        grid-list-lg>
-        <v-fade-transition mode="out-in">
-          <router-view></router-view>
-        </v-fade-transition>
-      </v-container>
-    </v-content>
-    <v-footer color="light-blue darken-4"
-      dark
-      class="white--text"
-      app>
-      <span>{{ foot }}</span>
-      <v-spacer></v-spacer>
-      <span>iunOs&copy; 2018</span>
-    </v-footer>
-    <Loading :show="loading"
-      :label="loadingLabel">
-    </Loading>
-  </v-app>
+<v-app id="app">
+  <SideNav :items="sideMenus" fixed app logoImages="static/images/logo.png" logoImagesHeight="200" v-model="drawer">
+  </SideNav>
+  <TopNav app fixed extended dark color="purple" sliderColor="white" activeColor="purple darken-2" @evSearch="searchArticle" title="iunOs" :items="topMenus">
+    <v-btn icon small>
+      <v-icon>comment</v-icon>
+    </v-btn>
+    <v-btn icon small>
+      <v-icon>account_circle</v-icon>
+    </v-btn>
+    <v-btn icon small>
+      <v-icon>more_vert</v-icon>
+    </v-btn>
+  </TopNav>
+  <v-content>
+    <v-container fluid grid-list-lg>
+      <v-fade-transition mode="out-in">
+        <router-view></router-view>
+      </v-fade-transition>
+    </v-container>
+  </v-content>
+  <v-footer color="light-blue darken-4" dark class="white--text" app>
+    <span>{{ foot }}</span>
+    <v-spacer></v-spacer>
+    <span>iunOs&copy; 2018</span>
+  </v-footer>
+  <Loading :show="loading" :label="loadingLabel">
+  </Loading>
+</v-app>
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import {
+  mapState,
+  mapMutations,
+  mapActions
+} from 'vuex'
 import Loading from 'vue-full-loading'
 import type from '@/store/type'
 import SideNav from '@/components/SideNav'
 import TopNav from '@/components/TopNav'
-import { sideNavItems } from '@/router'
+import {
+  sideNavItems
+} from '@/router'
 
 export default {
   name: 'App',
   data() {
     return {
       sideMenus: sideNavItems,
-      topMenus: [
-        { title: 'Home', name: 'home' },
-        { title: 'Trip', name: 'trip' },
-        { title: 'Team', name: 'team' },
-        { title: 'bbs', name: 'bbs' }
+      topMenus: [{
+          title: '홈',
+          name: 'home'
+        },
+        {
+          title: '여행',
+          name: 'trip'
+        },
+        {
+          title: '팀',
+          name: 'team'
+        },
+        {
+          title: 'BBS',
+          name: 'bbs'
+        }
       ],
       foot: `
       Sonrie, es un mal dia no una mala vida,
       Smile, it's been just a bad day,
       not a bad life
       `,
-      loadingLabel: 'waiting...'
+      loadingLabel: 'Loading...'
     }
   },
   computed: {
@@ -99,7 +90,12 @@ export default {
   },
   methods: {
     searchArticle(query) {
-      this[type.ARTICLE_ITEMS]({query}).then(resolve => { this.$router.push({name: 'home', query: {search: true}}) }).catch(error => { console.log(error) })
+      this.$router.push({
+        name: 'home',
+        query: {
+          search: query
+        }
+      })
     },
     ...mapMutations({
       setSideNavDrawer: type.SIDENAV_DRAWER

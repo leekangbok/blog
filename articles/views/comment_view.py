@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.core import serializers
 from django.http import JsonResponse
@@ -29,7 +30,9 @@ class CommentView(ViewBase):
             comment = form.save(commit=False)
             comment.article = article
             comment.save()
-        return JsonResponse({'result': 'success'})
+        return JsonResponse({
+            'items': json.loads(serializers.serialize('json', [comment]))
+        }, safe=False)
 
     def delete(self, _, fk, pk):
         get_object_or_404(Comment, pk=pk).delete()

@@ -1,9 +1,28 @@
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import type from '@/store/type'
-
 export default {
+  props: {
+    item: {
+      type: Object,
+      default () {
+        return null
+      }
+    },
+    comments: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    summary: {
+      type: Boolean,
+      default: false
+    }
+  },
   render(createElement) {
+    if (!this.item) {
+      return createElement('v-card')
+    }
+
     let data = {
       props: {}
     }
@@ -13,8 +32,7 @@ export default {
       data.props['to'] = {
         name: 'article_view',
         params: {
-          pk: this.item.pk,
-          item: this.item
+          pk: this.item.pk
         }
       }
       data.props['hover'] = true
@@ -28,122 +46,54 @@ export default {
       ...this.createComments()
     ])
   },
-  props: {
-    article: {
-      type: Object
-    },
-    summary: {
-      type: Boolean
-    }
-  },
   computed: {
     articleText() {
       if (this.summary) {
         return this.item.fields.body.slice(0, 256).concat('.'.repeat(12))
       }
       return this.item.fields.body
-    },
-    ...mapGetters({
-      comments: type.COMMENT_ITEMS
-    })
+    }
   },
   methods: {
-    doFavorite() {
-      this[type.UPDATE_ARTICLE_ITEM]({ item: this.item })
-        .then(resolve => {
-          this.item = Object.assign({}, resolve)
-          // this.$router.push({
-          //   name: 'article_view',
-          //   params: { pk: resolve.pk, item: resolve }
-          // })
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    ...mapActions([type.COMMENT_ITEMS, type.UPDATE_ARTICLE_ITEM]),
-    fetchCommentData() {
-      this[type.COMMENT_ITEMS]({ fk: this.item.pk })
-        .then(resolve => {})
-        .catch(error => {
-          console.log(error)
-        })
-    },
     createCommentTextbox() {
       if (this.showCommentInput) {
-        return [
-          this.$createElement('v-card', [
-            this.$createElement('v-card-text', [
-              this.$createElement('v-text-field', {
-                props: {
-                  name: 'input-1',
-                  label: 'label text',
-                  textarea: true
-                }
-              })
-            ]),
-            this.$createElement('v-card-actions', [
-              this.$createElement('v-btn', { props: { flat: true } }, '취소')
-            ])
-          ])
-        ]
+        return [this.$createElement('iu-reply-form', {
+          on: {
+            evSubmit: value => {
+              this.$emit('evSubmitComment', value)
+              this.showCommentInput = !this.showCommentInput
+            },
+            evCancel: () => {
+              this.showCommentInput = !this.showCommentInput
+            }
+          }
+        })]
       }
       return []
     },
     createComments() {
-      let comments = []
-
       if (!this.summary) {
-        for (let comment of this.comments.items) {
-          comments.push(
-            this.$createElement('v-divider'),
-            this.$createElement('v-card-text', comment.fields.body),
-            this.$createElement('v-card-actions', [
-              this.$createElement(
-                'div',
-                {
-                  class: {
-                    caption: true,
-                    'ma-2': true,
-                    'pa-2': true
-                  }
-                },
-                this.item.fields.modify_date
-              ),
-              this.$createElement(
-                'div',
-                {
-                  class: {
-                    caption: true,
-                    'ma-2': true,
-                    'pa-2': true
-                  }
-                },
-                this.item.fields.author
-              )
-            ])
-          )
-        }
+        return [this.$createElement('iu-reply-container', {
+          props: {
+            items: this.comments
+          }
+        })]
       }
-
-      return comments
+      return []
     },
     createTitle() {
       return this.$createElement(
-        'v-card-title',
-        {
+        'v-card-title', {
           props: {
             'primary-title': true
           }
-        },
-        [
+        }, [
           this.$createElement(
-            'span',
-            {
+            'span', {
               class: {
                 headline: true,
-                'deep-orange--text': true,
-                'text--accent-3': true
+                  'deep-orange--text': true,
+                  'text--accent-3': true
               }
             },
             this.item.fields.title
@@ -163,21 +113,20 @@ export default {
     createActions() {
       return this.$createElement('v-card-actions', [
         this.$createElement(
-          'div',
-          {
+          'div', {
             class: {
               caption: true,
-              'ma-2': true,
-              'pa-2': true
+                'blue--text': true,
+                'ma-2': true,
+                'pa-2': true
             }
           },
-          this.item.fields.modify_date
+          this.item.fields.created_date.replace('T', ' ')
         ),
         this.$createElement(
-          'div',
-          {
+          'div', {
             class: {
-              caption: true,
+              'body-1': true,
               'ma-2': true,
               'pa-2': true
             }
@@ -192,7 +141,7 @@ export default {
           },
           on: {
             evClick: () => {
-              this.doFavorite()
+              this.$emit('evFavorite')
             }
           }
         }),
@@ -206,8 +155,12 @@ export default {
         ops = [
           ...ops,
           this.$createElement(
-            'v-icon',
-            { props: { large: true, color: 'purple darken-1' } },
+            'v-icon', {
+              props: {
+                large: true,
+                color: 'purple darken-1'
+              }
+            },
             'more_horiz'
           )
         ]
@@ -217,7 +170,6 @@ export default {
           this.$createElement('iu-reply-btn', {
             on: {
               evClick: () => {
-                console.log(this.item.fields.title)
                 this.showCommentInput = !this.showCommentInput
               }
             }
@@ -229,15 +181,9 @@ export default {
   },
   data() {
     return {
-      item: null,
       showCommentInput: false
     }
   },
-  created() {
-    this.item = Object.assign({}, this.article)
-    if (!this.summary) {
-      this.fetchCommentData()
-    }
-  }
+  created() {}
 }
 </script>

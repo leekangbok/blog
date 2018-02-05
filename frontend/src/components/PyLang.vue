@@ -1,38 +1,35 @@
 <template>
-  <iu-grid-container :items="items.items">
-    <template slot-scope="props">
-      <iu-article-container :item="props.item" summary></iu-article-container>
-    </template>
-  </iu-grid-container>
+<ArticleSummaryView :items="items"></ArticleSummaryView>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import type from '@/store/type'
+import ArticleSummaryView from './ArticleSummaryView'
 
 export default {
   created() {
-    this.fetchData()
+    this.fetchArticleData()
   },
   methods: {
-    ...mapActions([type.ARTICLE_ITEMS]),
-    fetchData() {
-      this[type.ARTICLE_ITEMS]({ tag: 'PYTHON' })
-        .then(resolve => {
-          console.log(resolve)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+    fetchArticleData() {
+      this.fetchArticles({
+        tag: 'PYTHON'
+      }).then(response => {
+        this.items = response.items
+      }).catch(error => {
+        console.log(error)
+      })
     }
   },
-  computed: {
-    ...mapGetters({
-      items: type.ARTICLE_ITEMS
-    })
-  },
   watch: {
-    $route: 'fetchData'
+    $route: 'fetchArticleData'
+  },
+  data() {
+    return {
+      items: []
+    }
+  },
+  components: {
+    ArticleSummaryView
   }
 }
 </script>

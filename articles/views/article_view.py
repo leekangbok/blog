@@ -18,13 +18,14 @@ class ArticleView(ViewBase):
                 return JsonResponse({
                     'total'     : Article.objects.count(),
                     'curr_total': qs.count(),
-                    'items'     : json.loads(serializers.serialize('json', self.set_limit_offset(request, qs)))
+                    'items'     : json.loads(
+                        serializers.serialize('json', self.set_limit_offset(request, qs)))
                 }, safe=False)
             except Http404:
                 return JsonResponse({
                     'total'     : Article.objects.count(),
                     'curr_total': 0,
-                    'data'      : []
+                    'items'     : []
                 }, safe=False)
 
         return JsonResponse({
@@ -53,7 +54,7 @@ class ArticleView(ViewBase):
             if query:
                 qs = qs.filter(body__icontains=query)
             if tag:
-                qs = qs.filter(tag__iexact=tag)
+                qs = qs.filter(tag__exact=tag)
         else:
             qs = Article.objects.all()
         return qs

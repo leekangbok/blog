@@ -11,7 +11,8 @@ class Article(ArticleBase):
         ('JSCRIPT', '자바스크립트'),
         ('JSCRIPT-FRAMEWORK', '자바스크립트 프레임워크'),
         ('CPLUS+', 'C++'),
-        ('CPLUS+-FRAMEWORK', 'C++ 프레임워크')
+        ('CPLUS+-FRAMEWORK', 'C++ 프레임워크'),
+        ('STOCK', '주식')
     )
     title = models.CharField(max_length=512)
     tag = models.CharField(max_length=64, choices=TAGS)

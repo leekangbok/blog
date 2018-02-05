@@ -9,7 +9,7 @@
         color="purple darken-1"
         @click="onClick"
         slot="activator">
-        <v-icon>favorite</v-icon>
+        <v-icon>thumb_up</v-icon>
       </v-btn>
       <span>좋아요!</span>
     </v-tooltip>
