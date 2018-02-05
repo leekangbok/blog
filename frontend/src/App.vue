@@ -1,6 +1,6 @@
 <template>
 <v-app id="app">
-  <SideNav :items="sideMenus" fixed app logoImages="static/images/logo.png" logoImagesHeight="200" v-model="drawer">
+  <SideNav :items="sideMenus" fixed app logoImages="static/images/inOs.png" logoImagesHeight="200" v-model="drawer">
   </SideNav>
   <TopNav app fixed extended dark color="purple" sliderColor="white" activeColor="purple darken-2" @evSearch="searchArticle" title="inOs" :items="topMenus">
     <v-btn icon small>
