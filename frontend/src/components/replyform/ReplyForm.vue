@@ -1,6 +1,6 @@
 <template>
 <v-form v-model="valid" ref="form" lazy-validation>
-  <v-card class="ma-4 pa-4" hover>
+  <v-card class="ma-1 pa-1" hover>
     <v-card-text>
       <v-layout row wrap>
         <v-flex xs12>
