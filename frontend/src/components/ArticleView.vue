@@ -1,7 +1,7 @@
 <template>
 <v-layout justify-center>
   <v-flex md10>
-    <iu-article-container :item="item" :comments="comments" @evFavorite="incFavorite" @evSubmitComment="submitComment"></iu-article-container>
+    <iu-article-container :item="item" :comments="comments" @evFavorite="incFavorite" @evSubmitComment="submitComment" @evCommentUpdated="fetchArticleData"></iu-article-container>
   </v-flex>
 </v-layout>
 </template>

@@ -76,6 +76,11 @@ export default {
         return [this.$createElement('iu-reply-container', {
           props: {
             items: this.comments
+          },
+          on: {
+            evCommentUpdated: () => {
+              this.$emit('evCommentUpdated')
+            }
           }
         })]
       }

@@ -16,13 +16,13 @@
           <v-text-field label="글을 남겨주세요" v-model="body" :rules="bodyRules" :counter="2048" textarea required></v-text-field>
         </v-flex>
         <v-flex xs12>
-          <v-alert color="error" outline icon="warning" :value="alert" transition="scale-transition" @click.native="alert != alert">
+          <v-alert color="error" outline icon="warning" :value="alert" transition="scale-transition">
             비밀번호가 일치하지 않습니다.
           </v-alert>
         </v-flex>
         <v-flex xs12>
           <v-btn @click="submit" :disabled="!valid" color="purple white--text" small>
-            저장
+            {{ item.fields.body ? '수정' : '저장' }}
           </v-btn>
           <v-btn @click="clear" small>취소</v-btn>
         </v-flex>
@@ -42,11 +42,26 @@ export default {
           fields: {}
         }
       }
+    },
+    updateError: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    alert: {
+      get() {
+        return this.updateError || this.error
+      },
+      set(value) {
+        this.error = value
+        this.$emit('update:updateError', value)
+      }
     }
   },
   data() {
     return {
-      alert: false,
+      error: false,
       valid: true,
       author: this.item.fields.author || '',
       authorRules: [
@@ -80,13 +95,16 @@ export default {
         this.$emit('evSubmit', {
           author: this.author,
           body: this.body,
-          passwd: this.passwd
+          passwd: this.passwd,
+          pk: this.item.pk,
+          fk: this.item.fields.article
         })
       }
     },
     clear() {
       this.$refs.form.reset()
       this.$emit('evCancel')
+      this.$emit('update:updateError', false)
     }
   }
 }

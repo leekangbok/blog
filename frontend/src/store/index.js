@@ -50,6 +50,30 @@ const getters = {
 }
 
 const actions = {
+  [type.UPDATE_COMMENT_ITEM]({
+    commit
+  }, {
+    fk = '',
+    pk = '',
+    author = '',
+    body = '',
+    passwd = ''
+  }) {
+    commit(type.LOADING, true)
+    return new Promise((resolve, reject) => {
+      axios.post(`/api/articles/comment/${fk}/${pk}/change/`, qs.stringify({
+        author,
+        body,
+        passwd
+      })).then(response => {
+        commit(type.LOADING, false)
+        resolve(response.data)
+      }).catch(error => {
+        console.log(error)
+        reject(error)
+      })
+    })
+  },
   [type.ADD_COMMENT_ITEM]({
     dispatch,
     commit
@@ -66,7 +90,9 @@ const actions = {
         body,
         passwd
       })).then(response => {
-        dispatch(type.COMMENT_ITEMS, {fk}).then(response => {
+        dispatch(type.COMMENT_ITEMS, {
+          fk
+        }).then(response => {
           resolve(response)
         }).catch(error => {
           console.log(error)
@@ -79,7 +105,9 @@ const actions = {
   },
   [type.UPDATE_ARTICLE_ITEM]({
     commit
-  }, {item}) {
+  }, {
+    item
+  }) {
     let {
       author,
       passwd,
@@ -131,9 +159,7 @@ const actions = {
         }
       }).then(response => {
         for (let [index, item] of response.data.items.entries()) {
-          item.flex = index === 0
-            ? 8
-            : 4
+          item.flex = index === 0 ? 8 : 4
         }
         commit(type.LOADING, false)
         resolve(response.data)
@@ -165,4 +191,10 @@ const actions = {
   }
 }
 
-export default new Vuex.Store({state, mutations, actions, getters, modules: {}})
+export default new Vuex.Store({
+  state,
+  mutations,
+  actions,
+  getters,
+  modules: {}
+})

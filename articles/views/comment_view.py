@@ -1,5 +1,4 @@
 import json
-import re
 
 from django.core import serializers
 from django.http import JsonResponse
@@ -24,8 +23,14 @@ class CommentView(ViewBase):
 
     def post(self, request, fk, pk=-1):
         article = get_object_or_404(Article, pk=fk)
-        form = CommentForm(request.POST or None,
-                           instance=get_object_or_404(Comment, pk=pk) if pk > 0 else None)
+        if pk > 0:
+            instance = get_object_or_404(Comment, pk=pk)
+            if instance.passwd != request.POST.get('passwd', ''):
+                return JsonResponse({'items': [], 'result': 'failure'}, safe=False)
+        else:
+            instance = None
+
+        form = CommentForm(request.POST or None, instance=instance)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.article = article
