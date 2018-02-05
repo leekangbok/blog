@@ -19,7 +19,7 @@ urlpatterns = [
         path('<int:pk>/', include([
             path('', CommentView.as_view()),
             path('change/', CommentView.as_view()),
-            path('delete/', CommentView.as_view())
+            path('delete/<str:passwd>/', CommentView.as_view())
         ]))
     ]))
 ]

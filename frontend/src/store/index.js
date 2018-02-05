@@ -50,6 +50,24 @@ const getters = {
 }
 
 const actions = {
+  [type.DELETE_COMMENT_ITEM]({
+    commit
+  }, {
+    fk = '',
+    pk = '',
+    passwd = 'what123!23@@14$123'
+  }) {
+    commit(type.LOADING, true)
+    return new Promise((resolve, reject) => {
+      axios.delete(`/api/articles/comment/${fk}/${pk}/delete/${passwd}/`).then(response => {
+        commit(type.LOADING, false)
+        resolve(response.data)
+      }).catch(error => {
+        console.log(error)
+        reject(error)
+      })
+    })
+  },
   [type.UPDATE_COMMENT_ITEM]({
     commit
   }, {
@@ -61,11 +79,7 @@ const actions = {
   }) {
     commit(type.LOADING, true)
     return new Promise((resolve, reject) => {
-      axios.post(`/api/articles/comment/${fk}/${pk}/change/`, qs.stringify({
-        author,
-        body,
-        passwd
-      })).then(response => {
+      axios.post(`/api/articles/comment/${fk}/${pk}/change/`, qs.stringify({author, body, passwd})).then(response => {
         commit(type.LOADING, false)
         resolve(response.data)
       }).catch(error => {
@@ -85,14 +99,8 @@ const actions = {
   }) {
     commit(type.LOADING, true)
     return new Promise((resolve, reject) => {
-      axios.post(`/api/articles/comment/${fk}/add/`, qs.stringify({
-        author,
-        body,
-        passwd
-      })).then(response => {
-        dispatch(type.COMMENT_ITEMS, {
-          fk
-        }).then(response => {
+      axios.post(`/api/articles/comment/${fk}/add/`, qs.stringify({author, body, passwd})).then(response => {
+        dispatch(type.COMMENT_ITEMS, {fk}).then(response => {
           resolve(response)
         }).catch(error => {
           console.log(error)
@@ -105,9 +113,7 @@ const actions = {
   },
   [type.UPDATE_ARTICLE_ITEM]({
     commit
-  }, {
-    item
-  }) {
+  }, {item}) {
     let {
       author,
       passwd,
@@ -159,7 +165,9 @@ const actions = {
         }
       }).then(response => {
         for (let [index, item] of response.data.items.entries()) {
-          item.flex = index === 0 ? 8 : 4
+          item.flex = index === 0
+            ? 8
+            : 4
         }
         commit(type.LOADING, false)
         resolve(response.data)
@@ -191,10 +199,4 @@ const actions = {
   }
 }
 
-export default new Vuex.Store({
-  state,
-  mutations,
-  actions,
-  getters,
-  modules: {}
-})
+export default new Vuex.Store({state, mutations, actions, getters, modules: {}})

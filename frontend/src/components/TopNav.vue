@@ -11,7 +11,7 @@
           small>
           <v-icon>arrow_back</v-icon>
         </v-btn>
-        <v-text-field prepend-icon="search"
+        <v-text-field class="mt-2 mb-2" prepend-icon="search"
           :prepend-icon-cb="() => $emit('evSearch', search)"
           @keyup.enter="$emit('evSearch', search)"
           v-model.trim="search"

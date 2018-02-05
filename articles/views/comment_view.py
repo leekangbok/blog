@@ -39,6 +39,11 @@ class CommentView(ViewBase):
             'items': json.loads(serializers.serialize('json', [comment]))
         }, safe=False)
 
-    def delete(self, _, fk, pk):
-        get_object_or_404(Comment, pk=pk).delete()
+    def delete(self, request, fk, pk, passwd):
+        instance = get_object_or_404(Comment, pk=pk)
+
+        if passwd != instance.passwd:
+            return JsonResponse({'result': 'failure'})
+
+        instance.delete()
         return JsonResponse({'result': 'success'})

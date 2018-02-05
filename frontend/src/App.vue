@@ -23,7 +23,7 @@
   <v-footer color="light-blue darken-4" dark class="white--text" app>
     <span>{{ foot }}</span>
     <v-spacer></v-spacer>
-    <span>iunOs&copy; 2018</span>
+    <span>inOs&copy; 2018</span>
   </v-footer>
   <Loading :show="loading" :label="loadingLabel">
   </Loading>

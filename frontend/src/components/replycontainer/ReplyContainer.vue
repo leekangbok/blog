@@ -12,18 +12,21 @@
         <div class="caption ma-2 pa-2">{{ item.fields.author }}</div>
         <v-spacer></v-spacer>
         <v-btn small color="purple" dark @click.stop="$set(modifyMode, index, true)">수정</v-btn>
-        <v-btn small @click.stop = "dialog = !dialog">삭제</v-btn>
+        <v-btn small @click.stop="setDeleteComment(item)">삭제</v-btn>
       </v-card-actions>
     </div>
   </div>
-  <v-dialog v-model="dialog" max-width="290">
+  <v-dialog v-model="dialog" max-width="390">
     <v-card>
       <v-card-text>
-        <v-text-field label="비밀번호" required></v-text-field>
+        <v-text-field v-model="passwd" label="비밀번호" required></v-text-field>
+        <v-alert color="error" outline icon="warning" :value="!!errmsg" transition="scale-transition">
+          {{ errmsg }}
+        </v-alert>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn small color="purple" dark @click.native="dialog = false">확인</v-btn>
+        <v-btn small color="purple" dark @click.native="deleteCommentConfirm">확인</v-btn>
         <v-btn small @click.native="dialog = false">취소</v-btn>
       </v-card-actions>
     </v-card>
@@ -50,13 +53,15 @@ export default {
     return {
       dialog: false,
       modifyMode: [],
-      updateError: false
+      updateError: false,
+      passwd: '',
+      deletedItem: null,
+      errmsg: ''
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
-    ...mapActions([type.UPDATE_COMMENT_ITEM]),
+    ...mapActions([type.UPDATE_COMMENT_ITEM, type.DELETE_COMMENT_ITEM]),
     updateComment(item, index, value) {
       this[type.UPDATE_COMMENT_ITEM](value).then(response => {
         if (response.items.length === 0 || response.result === 'failure') {
@@ -68,6 +73,35 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    deleteCommentConfirm() {
+      if (!this.deletedItem) {
+        return
+      }
+      if (!this.passwd) {
+        this.errmsg = '비밀번호를 입력해주세요'
+        return
+      }
+      this[type.DELETE_COMMENT_ITEM]({
+        fk: this.deletedItem.fields.article,
+        pk: this.deletedItem.pk,
+        passwd: this.passwd
+      }).then(response => {
+        if (response.result === 'failure') {
+          this.errmsg = '비밀번호가 일치하지 않습니다'
+          return
+        }
+        this.dialog = false
+        this.$emit('evCommentUpdated')
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    setDeleteComment(item) {
+      this.errmsg = ''
+      this.passwd = ''
+      this.deletedItem = item
+      this.dialog = true
     }
   }
 }
