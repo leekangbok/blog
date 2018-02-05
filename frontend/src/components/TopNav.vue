@@ -1,15 +1,11 @@
 <template>
-  <v-tabs fixed
-    @input="value => $router.push({name: value})">
-    <v-toolbar v-bind="$attrs">
-      <v-toolbar-title :style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 172px'"
-        class="ml-0 pl-3"
-        v-if="!searchMode">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-xs-only"
-          v-if="title.length">{{ title }}</span>
-      </v-toolbar-title>
-      <template v-else>
+<v-tabs fixed @input="tabPush">
+  <v-toolbar v-bind="$attrs">
+    <v-toolbar-title :style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 250px' : 'min-width: 172px'" class="ml-0 pl-3" v-if="!searchMode">
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <span class="hidden-xs-only" v-if="title.length">{{ title }}</span>
+    </v-toolbar-title>
+    <template v-else>
         <v-btn @click="searchMode=!searchMode"
           icon
           small>
@@ -27,36 +23,27 @@
           single-line
           style="min-width: 130px"></v-text-field>
       </template>
-      <div class="d-flex align-center"
-        style="margin-left: auto">
-        <v-btn @click="searchMode=!searchMode"
-          icon
-          small
-          v-if="!searchMode">
-          <v-icon>search</v-icon>
-        </v-btn>
-        <slot></slot>
-      </div>
-      <v-tabs-bar color="transparent"
-        slot="extension"
-        v-if="items">
-        <v-tabs-slider id="topnav-tabs-slider"
-          :color="sliderColor"
-          v-if="sliderColor"></v-tabs-slider>
-        <v-tabs-item ripple
-          v-for="(item, i) in items"
-          :key="i"
-          :href="`#${item.name}`"
-          :active-class="`default-class ${activeColor}`">
-          {{ item.title }}
-        </v-tabs-item>
-      </v-tabs-bar>
-    </v-toolbar>
-  </v-tabs>
+    <div class="d-flex align-center" style="margin-left: auto">
+      <v-btn @click="searchMode=!searchMode" icon small v-if="!searchMode">
+        <v-icon>search</v-icon>
+      </v-btn>
+      <slot></slot>
+    </div>
+    <v-tabs-bar color="transparent" slot="extension" v-if="items">
+      <v-tabs-slider id="topnav-tabs-slider" :color="sliderColor" v-if="sliderColor"></v-tabs-slider>
+      <v-tabs-item ripple v-for="(item, i) in items" :key="i" :href="`#${item.name}`" :active-class="`default-class ${activeColor}`">
+        {{ item.title }}
+      </v-tabs-item>
+    </v-tabs-bar>
+  </v-toolbar>
+</v-tabs>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import {
+  mapState,
+  mapMutations
+} from 'vuex'
 import type from '@/store/type'
 
 export default {
@@ -100,7 +87,21 @@ export default {
   methods: {
     ...mapMutations({
       setSideNavDrawer: type.SIDENAV_DRAWER
-    })
+    }),
+    tabPush(value) {
+      if (value === 'HOME') {
+        this.$router.push({
+          name: 'home'
+        })
+        return
+      }
+      this.$router.push({
+        name: 'home',
+        query: {
+          tag: value
+        }
+      })
+    }
   }
 }
 </script>

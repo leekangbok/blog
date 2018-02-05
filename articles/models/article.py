@@ -5,6 +5,9 @@ from .base import ArticleBase
 
 class Article(ArticleBase):
     TAGS = (
+        ('TEAM', '팀'),
+        ('TRIP', '여행'),
+        ('BBS', '게시판'),
         ('BITCOIN', '비트코인'),
         ('PYTHON', '파이썬'),
         ('PYTHON-FRAMEWORK', '파이썬 프레임워크'),

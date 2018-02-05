@@ -2,7 +2,7 @@
 <v-app id="app">
   <SideNav :items="sideMenus" fixed app logoImages="static/images/logo.png" logoImagesHeight="200" v-model="drawer">
   </SideNav>
-  <TopNav app fixed extended dark color="purple" sliderColor="white" activeColor="purple darken-2" @evSearch="searchArticle" title="iunOs" :items="topMenus">
+  <TopNav app fixed extended dark color="purple" sliderColor="white" activeColor="purple darken-2" @evSearch="searchArticle" title="inOs" :items="topMenus">
     <v-btn icon small>
       <v-icon>comment</v-icon>
     </v-btn>
@@ -51,19 +51,19 @@ export default {
       sideMenus: sideNavItems,
       topMenus: [{
           title: '홈',
-          name: 'home'
+          name: 'HOME'
         },
         {
           title: '여행',
-          name: 'trip'
+          name: 'TRIP'
         },
         {
           title: '팀',
-          name: 'team'
+          name: 'TEAM'
         },
         {
           title: 'BBS',
-          name: 'bbs'
+          name: 'BBS'
         }
       ],
       foot: `
