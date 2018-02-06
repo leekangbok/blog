@@ -1,15 +1,12 @@
 <template>
 <v-layout justify-center>
   <v-flex md10>
-    <iu-article-container :item="item" :comments="comments" @evFavorite="incFavorite" @evSubmitComment="submitComment" @evCommentUpdated="fetchArticleData"></iu-article-container>
+    <iu-article-container :item="item" :comments="comments" @evFavorite="incFavorite" @evSubmitComment="submitComment" @evCommentUpdated="fetchArticle"></iu-article-container>
   </v-flex>
 </v-layout>
 </template>
 
 <script>
-import {
-  mapActions
-} from 'vuex'
 import type from '@/store/type'
 import store from '@/store'
 
@@ -24,35 +21,37 @@ export default {
   created() {
     this.item = this.$attrs.item
     this.comments = this.$attrs.comments
-    // this.fetchArticleData()
+    // this.fetchArticle()
   },
   methods: {
-    ...mapActions([
-      type.UPDATE_ARTICLE_ITEM,
-      type.ADD_COMMENT_ITEM
-    ]),
-    fetchArticleData() {
-      this.fetchArticles({
-        pk: this.pk
-      }).then(response => {
-        this.item = response.items[0]
-        this.fetchComments({
-          fk: this.pk
-        }).then(response => {
-          this.comments = response.items
-        }).catch(error => {
+    fetchArticle() {
+      this[type.ARTICLE_ITEMS]({
+          pk: this.pk
+        })
+        .then(response => {
+          this.item = response.items[0]
+          this[type.COMMENT_ITEMS]({
+              fk: this.pk
+            })
+            .then(response => {
+              this.comments = response.items
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        })
+        .catch(error => {
           console.log(error)
         })
-      }).catch(error => {
-        console.log(error)
-      })
     },
     incFavorite() {
       this[type.UPDATE_ARTICLE_ITEM]({
-          item: this.item
+          ...this.item.field,
+          num_stars: this.item.fields.num_stars + 1,
+          pk: this.item.pk
         })
         .then(resolve => {
-          this.fetchArticleData()
+          this.fetchArticle()
         })
         .catch(error => {
           console.log(error)
@@ -60,17 +59,18 @@ export default {
     },
     submitComment(value) {
       this[type.ADD_COMMENT_ITEM]({
-        fk: this.item.pk,
-        author: value.author,
-        body: value.body,
-        passwd: value.passwd
-      }).then(resolve => {
-        this.fetchArticleData()
-      })
+          fk: this.item.pk,
+          author: value.author,
+          body: value.body,
+          passwd: value.passwd
+        })
+        .then(resolve => {
+          this.fetchArticle()
+        })
     }
   },
   watch: {
-    // $route: 'fetchArticleData'
+    // $route: 'fetchArticle'
   },
   beforeRouteEnter(to, from, next) {
     store.dispatch(type.ARTICLE_ITEMS, {

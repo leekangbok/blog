@@ -19,7 +19,7 @@
   <v-dialog v-model="dialog" max-width="390">
     <v-card>
       <v-card-text>
-        <v-text-field v-model="passwd" label="비밀번호" required></v-text-field>
+        <v-text-field v-model="passwd" label="비밀번호" :append-icon="e1 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e1 = !e1)" :type="e1 ? 'password' : 'text'" required></v-text-field>
         <v-alert color="error" outline icon="warning" :value="!!errmsg" transition="scale-transition">
           {{ errmsg }}
         </v-alert>
@@ -35,9 +35,6 @@
 </template>
 
 <script>
-import {
-  mapActions
-} from 'vuex'
 import type from '@/store/type'
 
 export default {
@@ -56,23 +53,25 @@ export default {
       updateError: false,
       passwd: '',
       deletedItem: null,
-      errmsg: ''
+      errmsg: '',
+      e1: true
     }
   },
   created() {},
   methods: {
-    ...mapActions([type.UPDATE_COMMENT_ITEM, type.DELETE_COMMENT_ITEM]),
     updateComment(item, index, value) {
-      this[type.UPDATE_COMMENT_ITEM](value).then(response => {
-        if (response.items.length === 0 || response.result === 'failure') {
-          this.updateError = true
-        } else {
-          this.modifyMode[index] = false
-          this.$emit('evCommentUpdated')
-        }
-      }).catch(error => {
-        console.log(error)
-      })
+      this[type.UPDATE_COMMENT_ITEM](value)
+        .then(response => {
+          if (response.items.length === 0 || response.result === 'failure') {
+            this.updateError = true
+          } else {
+            this.modifyMode[index] = false
+            this.$emit('evCommentUpdated')
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     deleteCommentConfirm() {
       if (!this.deletedItem) {
@@ -83,19 +82,21 @@ export default {
         return
       }
       this[type.DELETE_COMMENT_ITEM]({
-        fk: this.deletedItem.fields.article,
-        pk: this.deletedItem.pk,
-        passwd: this.passwd
-      }).then(response => {
-        if (response.result === 'failure') {
-          this.errmsg = '비밀번호가 일치하지 않습니다'
-          return
-        }
-        this.dialog = false
-        this.$emit('evCommentUpdated')
-      }).catch(error => {
-        console.log(error)
-      })
+          fk: this.deletedItem.fields.article,
+          pk: this.deletedItem.pk,
+          passwd: this.passwd
+        })
+        .then(response => {
+          if (response.result === 'failure') {
+            this.errmsg = '비밀번호가 일치하지 않습니다'
+            return
+          }
+          this.dialog = false
+          this.$emit('evCommentUpdated')
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     setDeleteComment(item) {
       this.errmsg = ''
@@ -106,6 +107,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

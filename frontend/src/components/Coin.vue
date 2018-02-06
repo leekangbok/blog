@@ -4,24 +4,27 @@
 
 <script>
 import ArticleSummaryView from './ArticleSummaryView'
+import type from '@/store/type'
 
 export default {
   created() {
-    this.fetchArticleData()
+    this.fetchArticles()
   },
   methods: {
-    fetchArticleData() {
-      this.fetchArticles({
-        tag: 'BITCOIN'
-      }).then(response => {
-        this.items = response.items
-      }).catch(error => {
-        console.log(error)
-      })
+    fetchArticles() {
+      this[type.ARTICLE_ITEMS]({
+          tag: 'BITCOIN'
+        })
+        .then(response => {
+          this.items = response.items
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   },
   watch: {
-    $route: 'fetchArticleData'
+    $route: 'fetchArticles'
   },
   data() {
     return {

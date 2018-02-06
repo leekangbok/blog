@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
-import qs from 'qs'
 import type from './type'
+import api from './api'
 
 Vue.use(Vuex)
 
@@ -55,17 +54,21 @@ const actions = {
   }, {
     fk = '',
     pk = '',
-    passwd = 'what123!23@@14$123'
+    passwd = ''
   }) {
     commit(type.LOADING, true)
-    return new Promise((resolve, reject) => {
-      axios.delete(`/api/articles/comment/${fk}/${pk}/delete/${passwd}/`).then(response => {
+    return api.delete({
+      url: `/api/articles/comment/${fk}/${pk}/delete/`,
+      args: {
+        params: {
+          passwd
+        }
+      }
+    }, {
+      callback: (resolve, response) => {
         commit(type.LOADING, false)
-        resolve(response.data)
-      }).catch(error => {
-        console.log(error)
-        reject(error)
-      })
+        resolve(response)
+      }
     })
   },
   [type.UPDATE_COMMENT_ITEM]({
@@ -78,14 +81,18 @@ const actions = {
     passwd = ''
   }) {
     commit(type.LOADING, true)
-    return new Promise((resolve, reject) => {
-      axios.post(`/api/articles/comment/${fk}/${pk}/change/`, qs.stringify({author, body, passwd})).then(response => {
+    return api.post({
+      url: `/api/articles/comment/${fk}/${pk}/change/`,
+      args: {
+        author,
+        body,
+        passwd
+      }
+    }, {
+      callback: (resolve, response) => {
         commit(type.LOADING, false)
-        resolve(response.data)
-      }).catch(error => {
-        console.log(error)
-        reject(error)
-      })
+        resolve(response)
+      }
     })
   },
   [type.ADD_COMMENT_ITEM]({
@@ -98,47 +105,68 @@ const actions = {
     passwd = ''
   }) {
     commit(type.LOADING, true)
-    return new Promise((resolve, reject) => {
-      axios.post(`/api/articles/comment/${fk}/add/`, qs.stringify({author, body, passwd})).then(response => {
-        dispatch(type.COMMENT_ITEMS, {fk}).then(response => {
-          resolve(response.data)
-        }).catch(error => {
-          console.log(error)
-        })
-      }).catch(error => {
-        console.log(error)
-        reject(error)
-      })
+    return api.post({
+      url: `/api/articles/comment/${fk}/add/`,
+      args: {
+        author,
+        body,
+        passwd
+      }
+    }, {
+      callback: (resolve, response) => {
+        dispatch(type.COMMENT_ITEMS, {
+            fk
+          })
+          .then(response => {
+            commit(type.LOADING, false)
+            resolve(response)
+          })
+      }
+    })
+  },
+  [type.COMMENT_ITEMS]({
+    commit
+  }, {
+    fk = '',
+    pk = ''
+  } = {}) {
+    commit(type.LOADING, true)
+    return api.get({
+      url: `/api/articles/comment/${fk}/${pk}/`
+    }, {
+      callback: (resolve, response) => {
+        commit(type.LOADING, false)
+        resolve(response)
+      }
     })
   },
   [type.UPDATE_ARTICLE_ITEM]({
     commit
-  }, {item}) {
-    let {
-      author,
-      passwd,
-      body,
-      title,
-      tag,
-      num_stars
-    } = item.fields
-
+  }, {
+    author,
+    passwd,
+    body,
+    title,
+    tag,
+    num_stars,
+    pk
+  }) {
     commit(type.LOADING, true)
-    return new Promise((resolve, reject) => {
-      axios.post(`/api/articles/article/${item.pk}/change/`, qs.stringify({
+    return api.post({
+      url: `/api/articles/article/${pk}/change/`,
+      args: {
         author,
         passwd,
         body,
         title,
         tag,
-        num_stars: num_stars + 1
-      })).then(response => {
+        num_stars
+      }
+    }, {
+      callback: (resolve, response) => {
         commit(type.LOADING, false)
-        resolve(response.data.items[0])
-      }).catch(error => {
-        console.log(error)
-        reject(error)
-      })
+        resolve(response)
+      }
     })
   },
   [type.ARTICLE_ITEMS]({
@@ -151,52 +179,32 @@ const actions = {
     limit = 99999
   } = {}) {
     commit(type.LOADING, true)
-    return new Promise((resolve, reject) => {
-      let url = '/api/articles/article/'
-      if (pk) {
-        url = `${url}${pk}/`
-      }
-      axios.get(url, {
+    return api.get({
+      url: `/api/articles/article/${pk}/`,
+      args: {
         params: {
           query,
+          tag,
           offset,
-          limit,
-          tag
+          limit
         }
-      }).then(response => {
-        for (let [index, item] of response.data.items.entries()) {
-          item.flex = index === 0
-            ? 8
-            : 4
-        }
-        commit(type.LOADING, false)
-        resolve(response.data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-  [type.COMMENT_ITEMS]({
-    commit
-  }, {
-    fk = '',
-    pk = ''
-  } = {}) {
-    commit(type.LOADING, true)
-    return new Promise((resolve, reject) => {
-      let urls = `/api/articles/comment/${fk}/`
-      if (pk) {
-        urls = `${urls}${pk}/`
       }
-      axios.get(urls).then(response => {
-        commit(type.COMMENT_ITEMS, response.data)
+    }, {
+      callback: (resolve, response) => {
         commit(type.LOADING, false)
-        resolve(response.data)
-      }).catch(error => {
-        reject(error)
-      })
+        for (let [index, item] of response.items.entries()) {
+          item.flex = index === 0 ? 8 : 4
+        }
+        resolve(response)
+      }
     })
   }
 }
 
-export default new Vuex.Store({state, mutations, actions, getters, modules: {}})
+export default new Vuex.Store({
+  state,
+  mutations,
+  actions,
+  getters,
+  modules: {}
+})

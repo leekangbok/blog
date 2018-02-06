@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import {load} from '@/util'
+import {
+  load
+} from '@/util'
 import BitCoin from '@/view/bitcoin'
 import Cplus from '@/view/cplus'
 import Jscript from '@/view/jscript'
@@ -56,4 +58,6 @@ const routes = [
   }
 ]
 
-export default new Router({routes})
+export default new Router({
+  routes
+})

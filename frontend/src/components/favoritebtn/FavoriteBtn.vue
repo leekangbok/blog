@@ -1,19 +1,13 @@
 <template>
-  <v-badge left
-    overlap>
-    <span slot="badge">{{ numStars }}</span>
-    <v-tooltip bottom>
-      <v-btn icon
-        small
-        flat
-        color="purple darken-1"
-        @click="onClick"
-        slot="activator">
-        <v-icon>thumb_up</v-icon>
-      </v-btn>
-      <span>좋아요!</span>
-    </v-tooltip>
-  </v-badge>
+<v-badge left overlap>
+  <span slot="badge">{{ numStars }}</span>
+  <v-tooltip bottom>
+    <v-btn icon small flat color="purple darken-1" @click="onClick" slot="activator">
+      <v-icon>thumb_up</v-icon>
+    </v-btn>
+    <span>좋아요!</span>
+  </v-tooltip>
+</v-badge>
 </template>
 
 <script>

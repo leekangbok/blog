@@ -11,21 +11,23 @@ export default {
   props: {},
   created() {
     this.items = this.$route.params.items
-    // this.fetchArticleData()
+    // this.fetchArticles()
   },
   methods: {
-    fetchArticleData() {
-      this.fetchArticles({
-        tag: 'PYTHON-FRAMEWORK'
-      }).then(response => {
-        this.items = response.items
-      }).catch(error => {
-        console.log(error)
-      })
+    fetchArticles() {
+      this[type.ARTICLE_ITEMS]({
+          tag: 'PYTHON-FRAMEWORK'
+        })
+        .then(response => {
+          this.items = response.items
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   },
   watch: {
-    // $route: 'fetchArticleData'
+    // $route: 'fetchArticles'
   },
   data() {
     return {
