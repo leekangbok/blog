@@ -1,6 +1,13 @@
 import axios from 'axios'
 import qs from 'qs'
 
+function refineUrl(url) {
+  if (url.endsWith('//')) {
+    return url.slice(0, -1)
+  }
+  return url
+}
+
 export default {
   get({
     url,
@@ -14,7 +21,7 @@ export default {
     }
   } = {}) {
     return new Promise((resolve, reject) => {
-      axios.get(url, args)
+      axios.get(refineUrl(url), args)
         .then(response => {
           callback(resolve, response.data)
         })
@@ -35,7 +42,7 @@ export default {
     }
   } = {}) {
     return new Promise((resolve, reject) => {
-      axios.post(url, qs.stringify(args))
+      axios.post(refineUrl(url), qs.stringify(args))
         .then(response => {
           callback(resolve, response.data)
         })
@@ -56,7 +63,7 @@ export default {
     }
   } = {}) {
     return new Promise((resolve, reject) => {
-      axios.delete(url, args)
+      axios.delete(refineUrl(url), args)
         .then(response => {
           callback(resolve, response.data)
         })
