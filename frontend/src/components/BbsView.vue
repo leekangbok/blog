@@ -4,7 +4,7 @@
     <span class="headline deep-orange--text text--accent-3">{{item.fields.title}}</span>
   </v-card-title>
   <v-card-text>
-    <section v-html="item.fields.body"></section>
+    <section v-html="item.fields.body.replace(/\n|\r\n|\r/g, '<br>\r\n')"></section>
   </v-card-text>
   <v-card-actions>
     <div class="caption blue--text ma-2 pa-2">{{ item.fields.created_date.replace('T', ' ') }}</div>
@@ -46,6 +46,7 @@ export default {
       showCommentInput: false,
       item: {
         fields: {
+          body: '',
           created_date: ''
         }
       },
