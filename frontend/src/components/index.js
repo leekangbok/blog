@@ -8,9 +8,7 @@ import ReplyContainer from './replycontainer'
 import BbsForm from './bbsform'
 import Panel from './panel'
 import type from '@/store/type'
-import {
-  mapActions
-} from 'vuex'
+import {mapActions} from 'vuex'
 
 const components = {
   GridContainer,
@@ -46,7 +44,11 @@ export default {
           type.ARTICLE_ITEMS,
           type.BBS_ITEMS,
           type.UPDATE_BBS_ITEM,
-          type.ADD_BBS_ITEM
+          type.ADD_BBS_ITEM,
+          type.DELETE_BBS_COMMENT_ITEM,
+          type.UPDATE_BBS_COMMENT_ITEM,
+          type.ADD_BBS_COMMENT_ITEM,
+          type.BBS_COMMENT_ITEMS
         ])
       }
     })

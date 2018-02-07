@@ -114,13 +114,10 @@ const actions = {
       }
     }, {
       callback: (resolve, response) => {
-        dispatch(type.COMMENT_ITEMS, {
-            fk
-          })
-          .then(response => {
-            commit(type.LOADING, false)
-            resolve(response)
-          })
+        dispatch(type.COMMENT_ITEMS, {fk}).then(response => {
+          commit(type.LOADING, false)
+          resolve(response)
+        })
       }
     })
   },
@@ -193,7 +190,9 @@ const actions = {
       callback: (resolve, response) => {
         commit(type.LOADING, false)
         for (let [index, item] of response.items.entries()) {
-          item.flex = index === 0 ? 8 : 4
+          item.flex = index === 0
+            ? 8
+            : 4
         }
         resolve(response)
       }
@@ -226,12 +225,7 @@ const actions = {
   },
   [type.ADD_BBS_ITEM]({
     commit
-  }, {
-    author,
-    passwd,
-    body,
-    title
-  }) {
+  }, {author, passwd, body, title}) {
     commit(type.LOADING, true)
     return api.post({
       url: `/api/bbses/bbs/add/`,
@@ -247,13 +241,95 @@ const actions = {
         resolve(response)
       }
     })
+  },
+  [type.DELETE_BBS_COMMENT_ITEM]({
+    commit
+  }, {
+    fk = '',
+    pk = '',
+    passwd = ''
+  }) {
+    commit(type.LOADING, true)
+    return api.delete({
+      url: `/api/bbses/comment/${fk}/${pk}/delete/`,
+      args: {
+        params: {
+          passwd
+        }
+      }
+    }, {
+      callback: (resolve, response) => {
+        commit(type.LOADING, false)
+        resolve(response)
+      }
+    })
+  },
+  [type.UPDATE_BBS_COMMENT_ITEM]({
+    commit
+  }, {
+    fk = '',
+    pk = '',
+    author = '',
+    body = '',
+    passwd = ''
+  }) {
+    commit(type.LOADING, true)
+    return api.post({
+      url: `/api/bbses/comment/${fk}/${pk}/change/`,
+      args: {
+        author,
+        body,
+        passwd
+      }
+    }, {
+      callback: (resolve, response) => {
+        commit(type.LOADING, false)
+        resolve(response)
+      }
+    })
+  },
+  [type.ADD_BBS_COMMENT_ITEM]({
+    dispatch,
+    commit
+  }, {
+    fk = '',
+    author = '',
+    body = '',
+    passwd = ''
+  }) {
+    commit(type.LOADING, true)
+    return api.post({
+      url: `/api/bbses/comment/${fk}/add/`,
+      args: {
+        author,
+        body,
+        passwd
+      }
+    }, {
+      callback: (resolve, response) => {
+        dispatch(type.BBS_COMMENT_ITEMS, {fk}).then(response => {
+          commit(type.LOADING, false)
+          resolve(response)
+        })
+      }
+    })
+  },
+  [type.BBS_COMMENT_ITEMS]({
+    commit
+  }, {
+    fk = '',
+    pk = ''
+  } = {}) {
+    commit(type.LOADING, true)
+    return api.get({
+      url: `/api/bbses/comment/${fk}/${pk}/`
+    }, {
+      callback: (resolve, response) => {
+        commit(type.LOADING, false)
+        resolve(response)
+      }
+    })
   }
 }
 
-export default new Vuex.Store({
-  state,
-  mutations,
-  actions,
-  getters,
-  modules: {}
-})
+export default new Vuex.Store({state, mutations, actions, getters, modules: {}})

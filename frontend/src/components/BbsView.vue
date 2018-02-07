@@ -1,15 +1,17 @@
 <template lang="html">
 <v-card>
-  <v-card-title primary-title class="headline deep-orange--text text--accent-3">
-    {{item.fields.title}}
+  <v-card-title primary-title>
+    <span class="headline deep-orange--text text--accent-3">{{item.fields.title}}</span>
   </v-card-title>
-  <v-card-text v-html="item.fields.body"></v-card-text>
+  <v-card-text>
+    <section v-html="item.fields.body"></section>
+  </v-card-text>
   <v-card-actions>
     <div class="caption blue--text ma-2 pa-2">{{ item.fields.created_date.replace('T', ' ') }}</div>
     <div class="body-1 ma-2 pa-2">{{ item.fields.author }}</div>
     <v-spacer></v-spacer>
     <v-tooltip top>
-      <v-btn slot="activator" icon small flat color="purple">
+      <v-btn slot="activator" icon small flat color="purple" @click.stop="showCommentInput = !showCommentInput">
         <v-icon>reply</v-icon>
       </v-btn>
       <span>댓글</span>
@@ -27,7 +29,8 @@
       <span>삭제</span>
     </v-tooltip>
   </v-card-actions>
-  <iu-reply-container :item="comments"></iu-reply-container>
+  <iu-reply-form v-if="showCommentInput" @evSubmit="submitComment" @evCancel="showCommentInput = !showCommentInput"></iu-reply-form>
+  <iu-reply-container :items="comments" :updateAction="updateAction" :deleteAction="deleteAction" @evCommentUpdated="fetchBbs({pk})"></iu-reply-container>
 </v-card>
 </template>
 
@@ -38,6 +41,9 @@ export default {
   props: ['pk'],
   data() {
     return {
+      updateAction: type.UPDATE_BBS_COMMENT_ITEM,
+      deleteAction: type.DELETE_BBS_COMMENT_ITEM,
+      showCommentInput: false,
       item: {
         fields: {
           created_date: ''
@@ -52,11 +58,28 @@ export default {
     })
   },
   methods: {
+    submitComment(value) {
+      this[type.ADD_BBS_COMMENT_ITEM]({
+          ...value,
+          fk: this.item.pk
+        })
+        .then(response => {
+          this.showCommentInput = false
+          this.fetchBbs({
+            pk: this.pk
+          })
+        })
+    },
     fetchBbs(args = {}) {
       this[type.BBS_ITEMS](args)
         .then(response => {
-          console.log(response)
           this.item = response.items[0]
+          this[type.BBS_COMMENT_ITEMS]({
+              fk: this.item.pk
+            })
+            .then(response => {
+              this.comments = response.items
+            })
         })
     }
   }

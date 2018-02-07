@@ -19,7 +19,7 @@ class BbsView(ViewBase):
                     'total'     : Bbs.objects.count(),
                     'curr_total': qs.count(),
                     'items'     : json.loads(
-                            serializers.serialize('json', self.set_limit_offset(request, qs)))
+                        serializers.serialize('json', self.set_limit_offset(request, qs)))
                 }, safe=False)
             except Http404:
                 return JsonResponse({
@@ -43,8 +43,7 @@ class BbsView(ViewBase):
         form = BbsForm(request.POST or None, instance=instance)
         if form.is_valid():
             bbs = form.save(commit=False)
-            if instance is None:
-                bbs.passwd = self.hash_passwd(bbs.passwd)
+            bbs.passwd = self.hash_passwd(bbs.passwd)
             bbs.save()
         return JsonResponse({
             'items': json.loads(serializers.serialize('json', [bbs]))

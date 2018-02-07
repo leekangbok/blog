@@ -47,8 +47,6 @@
 </template>
 
 <script>
-import type from '@/store/type'
-
 export default {
   props: {
     items: {
@@ -56,6 +54,14 @@ export default {
       default () {
         return []
       }
+    },
+    updateAction: {
+      type: String,
+      default: ''
+    },
+    deleteAction: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -72,7 +78,7 @@ export default {
   created() {},
   methods: {
     updateComment(item, index, value) {
-      this[type.UPDATE_COMMENT_ITEM](value)
+      this[this.updateAction](value)
         .then(response => {
           if (response.items.length === 0 || response.result === 'failure') {
             this.updateError = true
@@ -93,7 +99,7 @@ export default {
         this.errmsg = '비밀번호를 입력해주세요'
         return
       }
-      this[type.DELETE_COMMENT_ITEM]({
+      this[this.deleteAction]({
           fk: this.deletedItem.fields.article,
           pk: this.deletedItem.pk,
           passwd: this.passwd

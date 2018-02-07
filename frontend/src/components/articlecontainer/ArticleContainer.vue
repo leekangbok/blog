@@ -1,4 +1,6 @@
 <script>
+import type from '@/store/type'
+
 export default {
   props: {
     item: {
@@ -71,7 +73,9 @@ export default {
       if (!this.summary) {
         return [this.$createElement('iu-reply-container', {
           props: {
-            items: this.comments
+            items: this.comments,
+            updateAction: type.UPDATE_COMMENT_ITEM,
+            deleteAction: type.DELETE_COMMENT_ITEM
           },
           on: {
             evCommentUpdated: () => {
