@@ -63,7 +63,7 @@ export default {
         },
         {
           title: 'BBS',
-          name: 'BBS'
+          name: 'bbs'
         }
       ],
       foot: `

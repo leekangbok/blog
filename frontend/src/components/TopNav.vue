@@ -89,6 +89,10 @@ export default {
       setSideNavDrawer: type.SIDENAV_DRAWER
     }),
     tabPush(value) {
+      if (value === 'bbs') {
+        this.$router.push({name: 'bbs'})
+        return
+      }
       if (value === 'HOME') {
         this.$router.push({
           name: 'home'

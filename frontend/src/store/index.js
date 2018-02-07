@@ -198,6 +198,55 @@ const actions = {
         resolve(response)
       }
     })
+  },
+  [type.BBS_ITEMS]({
+    commit
+  }, {
+    pk = '',
+    query = '',
+    offset = 0,
+    limit = 99999
+  } = {}) {
+    commit(type.LOADING, true)
+    return api.get({
+      url: `/api/bbses/bbs/${pk}/`,
+      args: {
+        params: {
+          query,
+          offset,
+          limit
+        }
+      }
+    }, {
+      callback: (resolve, response) => {
+        commit(type.LOADING, false)
+        resolve(response)
+      }
+    })
+  },
+  [type.ADD_BBS_ITEM]({
+    commit
+  }, {
+    author,
+    passwd,
+    body,
+    title
+  }) {
+    commit(type.LOADING, true)
+    return api.post({
+      url: `/api/bbses/bbs/add/`,
+      args: {
+        author,
+        passwd,
+        body,
+        title
+      }
+    }, {
+      callback: (resolve, response) => {
+        commit(type.LOADING, false)
+        resolve(response)
+      }
+    })
   }
 }
 

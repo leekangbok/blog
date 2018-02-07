@@ -11,7 +11,19 @@
         <div class="caption deep-purple--text ma-2 pa-2">{{ item.fields.created_date.replace('T', ' ') }}</div>
         <div class="caption ma-2 pa-2">{{ item.fields.author }}</div>
         <v-spacer></v-spacer>
+        <!-- <v-tooltip top>
+          <v-btn slot="activator" icon small flat color="purple" @click.stop="$set(modifyMode, index, true)">
+            <v-icon>mode_edit</v-icon>
+          </v-btn>
+          <span>수정</span>
+        </v-tooltip> -->
         <v-btn small color="purple" dark @click.stop="$set(modifyMode, index, true)">수정</v-btn>
+        <!-- <v-tooltip top>
+          <v-btn slot="activator" icon small flat color="red" @click.stop="setDeleteComment(item)">
+            <v-icon>delete</v-icon>
+          </v-btn>
+          <span>삭제</span>
+        </v-tooltip> -->
         <v-btn small @click.stop="setDeleteComment(item)">삭제</v-btn>
       </v-card-actions>
     </div>

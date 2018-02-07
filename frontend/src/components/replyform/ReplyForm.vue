@@ -2,32 +2,36 @@
 <v-form v-model="valid" ref="form" lazy-validation>
   <v-card class="ma-1 pa-1" hover>
     <v-card-text>
-      <v-layout row wrap>
-        <v-flex xs12>
-          <v-text-field label="이름" v-model="author" :rules="authorRules" :counter="64" required></v-text-field>
-        </v-flex>
-        <v-flex xs12 sm6>
-          <v-text-field @focus="alert = false" :rules="passwdRules" label="비밀번호" v-model="passwd" :append-icon="e1 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e1 = !e1)" :type="e1 ? 'password' : 'text'" :counter="64" required></v-text-field>
-        </v-flex>
-        <v-flex xs12 sm6>
-          <v-text-field @focus="alert = false" :rules="passwdRules" label="비밀번호확인" v-model="repasswd" :append-icon="e2 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e2 = !e2)" :type="e2 ? 'password' : 'text'" :counter="64" required></v-text-field>
-        </v-flex>
-        <v-flex xs12>
-          <v-text-field label="글을 남겨주세요" v-model="body" :rules="bodyRules" :counter="2048" textarea required></v-text-field>
-        </v-flex>
-        <v-flex xs12>
-          <v-alert color="error" outline icon="warning" :value="alert" transition="scale-transition">
-            비밀번호가 일치하지 않습니다.
-          </v-alert>
-        </v-flex>
-        <v-flex xs12>
-          <v-btn @click="submit" :disabled="!valid" color="purple white--text" small>
-            {{ item.fields.body ? '수정' : '저장' }}
-          </v-btn>
-          <v-btn @click="clear" small>취소</v-btn>
-        </v-flex>
-      </v-layout>
+      <v-container grid-list-md>
+        <v-layout row wrap>
+          <v-flex xs12>
+            <v-text-field label="이름" v-model="author" :rules="authorRules" :counter="64" required></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6>
+            <v-text-field @focus="alert = false" :rules="passwdRules" label="비밀번호" v-model="passwd" :append-icon="e1 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e1 = !e1)" :type="e1 ? 'password' : 'text'" :counter="64" required></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6>
+            <v-text-field @focus="alert = false" :rules="passwdRules" label="비밀번호확인" v-model="repasswd" :append-icon="e2 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e2 = !e2)" :type="e2 ? 'password' : 'text'" :counter="64" required></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-text-field label="글을 남겨주세요" v-model="body" :rules="bodyRules" :counter="2048" textarea required></v-text-field>
+          </v-flex>
+          <v-flex xs12>
+            <v-alert color="error" outline icon="warning" :value="alert" transition="scale-transition">
+              비밀번호가 일치하지 않습니다.
+            </v-alert>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <small>*필수입력</small>
     </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn @click="submit" :disabled="!valid" color="purple white--text" small>
+        {{ item.fields.body ? '수정' : '저장' }}
+      </v-btn>
+      <v-btn @click="clear" small>취소</v-btn>
+    </v-card-actions>
   </v-card>
 </v-form>
 </template>

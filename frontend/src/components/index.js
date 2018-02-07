@@ -5,6 +5,8 @@ import ReplyBtn from './replybtn'
 import FavoriteBtn from './favoritebtn'
 import ReplyForm from './replyform'
 import ReplyContainer from './replycontainer'
+import BbsForm from './bbsform'
+import Panel from './panel'
 import type from '@/store/type'
 import {
   mapActions
@@ -16,7 +18,9 @@ const components = {
   ReplyBtn,
   FavoriteBtn,
   ReplyForm,
-  ReplyContainer
+  ReplyContainer,
+  BbsForm,
+  Panel
 }
 
 function componentsInstall(Vue) {
@@ -39,7 +43,10 @@ export default {
           type.ADD_COMMENT_ITEM,
           type.COMMENT_ITEMS,
           type.UPDATE_ARTICLE_ITEM,
-          type.ARTICLE_ITEMS
+          type.ARTICLE_ITEMS,
+          type.BBS_ITEMS,
+          type.UPDATE_BBS_ITEM,
+          type.ADD_BBS_ITEM
         ])
       }
     })

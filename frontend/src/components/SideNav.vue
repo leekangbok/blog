@@ -1,8 +1,10 @@
 <template>
 <v-navigation-drawer v-bind="$attrs" :value="value" @input="value => $emit('input', value)">
   <v-card flat color="transparent">
-    <v-card-media :src="logoImages" :height="`${logoImagesHeight}px`">
-    </v-card-media>
+    <v-card flat hover :to="{name: 'home'}">
+      <v-card-media :src="logoImages" :height="`${logoImagesHeight}px`">
+      </v-card-media>
+    </v-card>
     <v-divider></v-divider>
     <v-list>
       <template v-for="(item, i) in items">

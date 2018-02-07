@@ -20,5 +20,6 @@ from django.views.generic.base import TemplateView
 urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
     path('api/articles/', include('articles.urls', namespace='articles-view')),
+    path('api/bbses/', include('bbs.urls', namespace='bbs-view')),
     path('admin/', admin.site.urls),
 ]

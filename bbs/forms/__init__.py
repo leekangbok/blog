@@ -1,0 +1,1 @@
+from .bbs_form import BbsForm

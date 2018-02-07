@@ -34,11 +34,21 @@ const routes = [
       currentValue
     ]
   }, []), {
+    path: '/bbs_view/:pk',
+    name: 'bbs_view',
+    props: true,
+    component: load('components/BbsView')
+  }, {
     path: '/article_view/:pk',
     name: 'article_view',
     props: true,
     component: load('components/ArticleView')
   }, {
+    path: '/bbs',
+    name: 'bbs',
+    component: load('components/Bbs')
+  },
+  {
     path: '/',
     name: 'home',
     props: ({
